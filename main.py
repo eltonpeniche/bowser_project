@@ -45,38 +45,25 @@ for i in y:
 			aux.remove(i)
 	z+=1
 
-
+#compara com um devido ao IP do computador local não ser localizado
 if len(aux) == 1:	
 	print("Sucesso")
 	for i in lista3:
-		print(i)
+		print(i[0] + " " + i[1])
 else:
-    #for i in aux:
-     #   j = 10
-      #  x = []
-       # while(x == [] and j >=1):
-        #    print("testando ",j)
-         #   x = os.popen("sudo arp-scan -l |grep " + i[0]).readline().split()
-          #  if x != []:    
-           #     lista3.append([x[0],i[1]])
-            #j-=1
-
-    for i in range(1, len(aux)):
+	#começa do um devido ao IP do computador local não ser localizado
+	for i in range(1, len(aux)):
         j = 10
         x = []
         while(x == [] and j >=1):
-            print("testando ",j)
             x = os.popen("sudo arp-scan -l |grep " + aux[i][0]).readline().split()
             if x != []:    
                 lista3.append([x[0],aux[i][1]])
             j-=1
 
-print(lista3)
-
-
-#grava no arquivo host a lista3
+#grava no arquivo host a lista3 (contém IP + NOME DO COMPUTADOR)
 arq = open('hosts', 'w')
-arq.writelines('127.0.0.1	localhost' + '\n\n')
+arq.writelines('127.0.0.1	localhost' + '\n')
 for i in lista3:
 	arq.writelines(i[0]+ ' ' +i[1] + '\n')
 arq.close()
