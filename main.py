@@ -3,9 +3,9 @@ import os
 
 rede = "192"
 
-os.system("sudo apt install arp-scan -y")
+#os.system("sudo apt install arp-scan -y")
 os.system("echo '' > ips.txt")
-os.system("sudo arp-scan 192.168.100.0/24 >> ips.txt")
+os.system("sudo arp-scan -l >> ips.txt")
 
 #abre o arquivo que contém o endereço ip e mac dos computadores ativos na rede
 # e coloca na lista X
@@ -51,9 +51,27 @@ if len(aux) == 1:
 	for i in lista3:
 		print(i)
 else:
-	print("Computadores não podem ser acessados:")
-	for i in range(1,len(aux)):
-		print(aux[i][1])
+    #for i in aux:
+     #   j = 10
+      #  x = []
+       # while(x == [] and j >=1):
+        #    print("testando ",j)
+         #   x = os.popen("sudo arp-scan -l |grep " + i[0]).readline().split()
+          #  if x != []:    
+           #     lista3.append([x[0],i[1]])
+            #j-=1
+
+    for i in range(1, len(aux)):
+        j = 10
+        x = []
+        while(x == [] and j >=1):
+            print("testando ",j)
+            x = os.popen("sudo arp-scan -l |grep " + aux[i][0]).readline().split()
+            if x != []:    
+                lista3.append([x[0],aux[i][1]])
+            j-=1
+
+print(lista3)
 
 
 #grava no arquivo host a lista3
