@@ -1,7 +1,7 @@
 # Importar modulo do sistema operacional
 import os
 
-rede = "192"
+rede = os.popen("hostname -I").readline()[:3]
 
 #os.system("sudo apt install arp-scan -y")
 os.system("echo '' > ips.txt")
@@ -46,24 +46,24 @@ for i in y:
 	z+=1
 
 #compara com um devido ao IP do computador local não ser localizado
-if len(aux) == 1:	
+if len(aux) != 1:	
+	#começa do um devido ao IP do computador local não ser localizado
+	for i in range(1, len(aux)):
+		j = 15
+		x = []
+		while(x == [] and j >=1):
+			x = os.popen("sudo arp-scan -l |grep " + aux[i][0]).readline().split()
+			if x != []:
+				lista3.append([x[0],aux[i][1]])
+			j-=1
+else:
 	print("Sucesso")
 	for i in lista3:
 		print(i[0] + " " + i[1])
-else:
-	#começa do um devido ao IP do computador local não ser localizado
-	for i in range(1, len(aux)):
-        j = 10
-        x = []
-        while(x == [] and j >=1):
-            x = os.popen("sudo arp-scan -l |grep " + aux[i][0]).readline().split()
-            if x != []:    
-                lista3.append([x[0],aux[i][1]])
-            j-=1
 
 #grava no arquivo host a lista3 (contém IP + NOME DO COMPUTADOR)
 arq = open('hosts', 'w')
-arq.writelines('127.0.0.1	localhost' + '\n')
+arq.writelines('127.0.0.1	localhost' + '\n\n')
 for i in lista3:
 	arq.writelines(i[0]+ ' ' +i[1] + '\n')
 arq.close()
