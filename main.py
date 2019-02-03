@@ -69,3 +69,10 @@ for i in lista3:
 arq.close()
 
 os.system("sudo mv hosts /etc/hosts")
+
+#lista de hosts disponiveis 
+arq = open('hosts', 'w')
+for i in lista3:
+	arq.writelines(i[1] + '\n')
+arq.close()
+os.system("sudo mv hosts ~/hosts")
