@@ -35,6 +35,7 @@ configurarArquivoHosts(){
 	    echo "$USER ALL=NOPASSWD: /bin/cp" | sudo tee -a /etc/sudoers
 	    echo "$USER ALL=NOPASSWD: /bin/rm" | sudo tee -a /etc/sudoers
 	    echo "$USER ALL=NOPASSWD: /usr/bin/python3" | sudo tee -a /etc/sudoers
+	    echo "$USER ALL=NOPASSWD: /sbin/reboot" | sudo tee -a /etc/sudoers
 		
 		python3 main.py
 		chmod a+x startCluster.sh

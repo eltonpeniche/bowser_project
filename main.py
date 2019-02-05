@@ -1,65 +1,83 @@
 # Importar modulo do sistema operacional
 import os
 
+NT = 10
 rede = os.popen("hostname -I").readline()[:3]
 
-#os.system("sudo apt install arp-scan -y")
-os.system("echo '' > ips.txt")
-os.system("sudo arp-scan -l >> ips.txt")
+def setX():
+    os.system("sudo arp-scan -l > ips.txt")
 
-#abre o arquivo que contém o endereço ip e mac dos computadores ativos na rede
-# e coloca na lista X
-ref_arquivo = open("ips.txt","r")
-linha = ref_arquivo.readline()
-x = []
-while linha:
-	if rede in linha:
-		valor1, valor2, *_ = linha.split()
-		x.append([valor1, valor2])
-	linha = ref_arquivo.readline()
-ref_arquivo.close()
-os.system("sudo rm -Rf ips.txt")
+    #abre o arquivo que contém o endereço ip e mac dos computadores ativos na rede
+    # e coloca na lista X
+    ref_arquivo = open("ips.txt","r")
+    linha = ref_arquivo.readline()
+    x = []
+    while linha:
+        if rede in linha:
+            valor1, valor2, *_ = linha.split()
+            x.append([valor1, valor2])
+        linha = ref_arquivo.readline()
+    ref_arquivo.close()
+    #os.system("sudo rm -Rf ips.txt")
 
-#abre o arquivo que contém o endereço mac e o nome dos computadores ativos na rede
-# e os coloca numa lista Y
-ref_arquivo = open("mac_host.txt","r")
-linha = ref_arquivo.readline()
-y = []
-while linha:
-	valores = linha.split()
-	y.append(valores)
-	linha = ref_arquivo.readline()
-ref_arquivo.close()
+    return x;
+
+def setY():
+        
+    #abre o arquivo que contém o endereço mac e o nome dos computadores ativos na rede
+    # e os coloca numa lista Y
+    ref_arquivo = open("mac_host.txt","r")
+    linha = ref_arquivo.readline()
+    y = []
+    while linha:
+        valores = linha.split()
+        y.append(valores)
+        linha = ref_arquivo.readline()
+    ref_arquivo.close()
+    
+    return y;
+
+
+def join_XY(x, y):
+    #cria uma lista com o ip e nome do host a partir das litas X e Y
+    aux = list(y)
+    lista = []
+    for i in y:
+        for j in x:
+            if(i[0]==j[1]):
+                if (len(aux) > 1):
+                    lista.append([j[0],i[1]])
+                    try:
+                        aux.remove(i)
+                    except Exception:
+                        print("Erro")
+                else:
+                    return [lista, aux];
+                    
+        
+    return [lista, aux];
 
 #como o comando "arp-scan" não traz o endereço na maquina local
 #este comando é usado para pegar o nome e ip do host local
 lista3 = [[os.popen("hostname -I").readline().rstrip('\n '), os.popen("hostname").readline().rstrip('\n ')]]
 
-#cria uma lista com o ip e nome do host a partir das litas X e Y
-aux = y.copy()  
-z = 0
-for i in y:
-	for j in x:
-		if(i[0]==j[1]):
-			lista3.append([j[0],i[1]])
-			aux.remove(i)
-	z+=1
+y = setY()
+x = setX()
+l, aux = join_XY(x,y)
+lista3.extend(l)
 
-#compara com um devido ao IP do computador local não ser localizado
-if len(aux) != 1:	
-	#começa do um devido ao IP do computador local não ser localizado
-	for i in range(1, len(aux)):
-		j = 15
-		x = []
-		while(x == [] and j >=1):
-			x = os.popen("sudo arp-scan -l |grep " + aux[i][0]).readline().split()
-			if x != []:
-				lista3.append([x[0],aux[i][1]])
-			j-=1
-else:
-	print("Sucesso")
-	for i in lista3:
-		print(i[0] + " " + i[1])
+#compara com "1", devido ao IP do computador local não ser localizado
+if len(aux) > 1:
+	while(len(aux) > 1 and NT >=1):
+        #print("tentando ", NT, " aux " , aux )
+        print("tentando", aux)
+        x = setX()
+        l, aux2 = join_XY(x, aux)
+        if l not in lista3:
+            lista3.extend(l)
+        aux = list(aux2)
+        NT-=1
+            
 
 #grava no arquivo host a lista3 (contém IP + NOME DO COMPUTADOR)
 arq = open('hosts', 'w')
@@ -68,11 +86,16 @@ for i in lista3:
 	arq.writelines(i[0]+ ' ' +i[1] + '\n')
 arq.close()
 
-os.system("sudo mv hosts /etc/hosts")
+#os.system("sudo mv hosts /etc/hosts")
+for i in lista3:
+    print(i)
 
+
+"""
 #lista de hosts disponiveis 
 arq = open('hosts', 'w')
 for i in lista3:
 	arq.writelines(i[1] + '\n')
 arq.close()
 os.system("sudo mv hosts ~/hosts")
+"""
