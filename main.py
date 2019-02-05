@@ -68,13 +68,10 @@ lista3.extend(l)
 
 #compara com "1", devido ao IP do computador local não ser localizado
 if len(aux) > 1:
-	while(len(aux) > 1 and NT >=1):
-        #print("tentando ", NT, " aux " , aux )
-        print("tentando", aux)
+    while(len(aux) > 1 and NT >=1):
         x = setX()
         l, aux2 = join_XY(x, aux)
-        if l not in lista3:
-            lista3.extend(l)
+        if l not in lista3: lista3.extend(l)
         aux = list(aux2)
         NT-=1
             
@@ -87,6 +84,7 @@ for i in lista3:
 arq.close()
 
 #os.system("sudo mv hosts /etc/hosts")
+print(len(lista3))
 for i in lista3:
     print(i)
 
