@@ -1,7 +1,7 @@
 # Importar modulo do sistema operacional
 import os
 
-NT = 10
+NT = 15
 rede = os.popen("hostname -I").readline()[:3]
 
 def setX():
@@ -44,18 +44,15 @@ def join_XY(x, y):
     lista = []
     for i in y:
         for j in x:
+            if len(aux) == 1:
+                return [lista, aux]
             if(i[0]==j[1]):
-                if (len(aux) > 1):
+                if i in aux:
                     lista.append([j[0],i[1]])
-                    try:
-                        aux.remove(i)
-                    except Exception:
-                        print("Erro")
-                else:
-                    return [lista, aux];
+                    aux.remove(i)
+              
                     
-        
-    return [lista, aux];
+    return [lista, aux]
 
 #como o comando "arp-scan" não traz o endereço na maquina local
 #este comando é usado para pegar o nome e ip do host local
@@ -68,14 +65,12 @@ lista3.extend(l)
 
 #compara com "1", devido ao IP do computador local não ser localizado
 if len(aux) > 1:
-	while(len(aux) > 1 and NT >=1):
-        #print("tentando ", NT, " aux " , aux )
-        print("tentando", aux)
+    while(len(aux) > 1 and NT >=1):
+        #print("tentando", aux[1:])
         x = setX()
         l, aux2 = join_XY(x, aux)
-        if l not in lista3:
-            lista3.extend(l)
         aux = list(aux2)
+        if l not in lista3: lista3.extend(l)
         NT-=1
             
 
@@ -86,10 +81,10 @@ for i in lista3:
 	arq.writelines(i[0]+ ' ' +i[1] + '\n')
 arq.close()
 
-#os.system("sudo mv hosts /etc/hosts")
+print("sucesso")
 for i in lista3:
     print(i)
-
+#os.system("sudo mv hosts /etc/hosts")
 
 """
 #lista de hosts disponiveis 
