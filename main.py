@@ -66,9 +66,15 @@ lista3.extend(l)
 #compara com "1", devido ao IP do computador local não ser localizado
 if len(aux) > 1:
     while(len(aux) > 1 and NT >=1):
+<<<<<<< HEAD
         #print("tentando", aux[1:])
         x = setX()
         l, aux2 = join_XY(x, aux)
+=======
+        x = setX()
+        l, aux2 = join_XY(x, aux)
+        if l not in lista3: lista3.extend(l)
+>>>>>>> 2d8466493d3f9aa85e62595a513c121ce58da086
         aux = list(aux2)
         if l not in lista3: lista3.extend(l)
         NT-=1
@@ -81,7 +87,12 @@ for i in lista3:
 	arq.writelines(i[0]+ ' ' +i[1] + '\n')
 arq.close()
 
+<<<<<<< HEAD
 print("sucesso")
+=======
+#os.system("sudo mv hosts /etc/hosts")
+print(len(lista3))
+>>>>>>> 2d8466493d3f9aa85e62595a513c121ce58da086
 for i in lista3:
     print(i)
 #os.system("sudo mv hosts /etc/hosts")
