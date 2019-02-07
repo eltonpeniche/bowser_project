@@ -29,9 +29,8 @@ def setX():
             x.append([valor1, valor2])
         linha = ref_arquivo.readline()
     ref_arquivo.close()
-    #os.system("sudo rm -Rf ips.txt")
-
-    return x;
+    os.system("sudo rm -Rf ips.txt")
+	return x;
 
 def setY():
         
@@ -45,7 +44,6 @@ def setY():
         y.append(valores)
         linha = ref_arquivo.readline()
     ref_arquivo.close()
-    
     return y;
 
 
@@ -61,9 +59,7 @@ def join_XY(x, y):
                 if i in aux:
                     lista.append([j[0],i[1]])
                     aux.remove(i)
-              
-                    
-    return [lista, aux]
+	return [lista, aux]
 
 #como o comando "arp-scan" não traz o endereço na maquina local
 #este comando é usado para pegar o nome e ip do host local
@@ -85,6 +81,8 @@ if len(aux) > 1:
         NT-=1
             
 
+lista3 = quicksort(lista3)
+
 #grava no arquivo host a lista3 (contém IP + NOME DO COMPUTADOR)
 arq = open('hosts', 'w')
 arq.writelines('127.0.0.1	localhost' + '\n\n')
@@ -92,18 +90,18 @@ for i in lista3:
 	arq.writelines(i[0]+ ' ' +i[1] + '\n')
 arq.close()
 
-
-print("sucesso")
-lista3 = quicksort(lista3)
-for i in lista3:
-    print(i)
-#os.system("sudo mv hosts /etc/hosts")
+os.system("sudo mv hosts /etc/hosts")
 
 """
+print("sucesso")
+for i in lista3:
+    print(i)
+
+"""
+
 #lista de hosts disponiveis 
 arq = open('hosts', 'w')
 for i in lista3:
 	arq.writelines(i[1] + '\n')
 arq.close()
 os.system("sudo mv hosts ~/hosts")
-"""
