@@ -22,6 +22,13 @@ configurarArquivoHosts(){
 		echo ""
 	fi	
 
+	echo "$USER ALL=NOPASSWD: /usr/sbin/arp-scan/" | sudo tee -a /etc/sudoers
+    echo "$USER ALL=NOPASSWD: /bin/mv" | sudo tee -a /etc/sudoers
+    echo "$USER ALL=NOPASSWD: /bin/cp" | sudo tee -a /etc/sudoers
+    echo "$USER ALL=NOPASSWD: /bin/rm" | sudo tee -a /etc/sudoers
+    echo "$USER ALL=NOPASSWD: /usr/bin/python3" | sudo tee -a /etc/sudoers
+    echo "$USER ALL=NOPASSWD: /sbin/reboot, /sbin/shutdown" | sudo tee -a /etc/sudoers
+
 	#== ============Configuração do Slave==============================
 	if [ $ms -eq 1 ]; then
 		python3 main.py
@@ -30,16 +37,15 @@ configurarArquivoHosts(){
 
 	elif [ $ms -eq 0 ]; then
 
-		echo "$USER ALL=NOPASSWD: /usr/sbin/arp-scan/" | sudo tee -a /etc/sudoers
-	    echo "$USER ALL=NOPASSWD: /bin/mv" | sudo tee -a /etc/sudoers
-	    echo "$USER ALL=NOPASSWD: /bin/cp" | sudo tee -a /etc/sudoers
-	    echo "$USER ALL=NOPASSWD: /bin/rm" | sudo tee -a /etc/sudoers
-	    echo "$USER ALL=NOPASSWD: /usr/bin/python3" | sudo tee -a /etc/sudoers
-	    echo "$USER ALL=NOPASSWD: /sbin/reboot" | sudo tee -a /etc/sudoers
-		
 		python3 main.py
 		chmod a+x startCluster.sh
 		sudo cp startCluster.sh /usr/bin
+
+		chmod a+x rebootCluster.sh
+		sudo cp rebootCluster.sh /usr/bin
+
+		chmod a+x shutdownCluster.sh
+		sudo cp shutdownCluster.sh /usr/bin
 	
 	fi
 
@@ -162,10 +168,10 @@ while true; do
 	elif [ $opcao -eq 4 ]; then
 		instacaoOpenMpi	
 	elif [ $opcao -eq 5 ]; then
-		instacaoOpenMpi
         configurarArquivoHosts
 		instalarNFS	
 		instalarSSH
+		instacaoOpenMpi
 	elif [ $opcao -eq 0 ]; then
 		break
 	else
