@@ -127,17 +127,17 @@ instacaoOpenMpi(){
 	echo "-----------Passo(4/4)--------------------"
 	echo "------Instalando o OPEN MPI--------------"
 	sleep 2
-	cp $cam/openmpi-3.1.2.tar.gz ~/Documentos
+	cp $cam/openmpi-4.0.0.tar.gz ~/Documentos
 	cd ~/Documentos
-	tar -vzxf openmpi-3.1.2.tar.gz
-	cd openmpi-3.1.2
-	./configure --enable-orterun-prefix-by-default   
-	make;sudo make install
+	gunzip -c openmpi-4.0.0.tar.gz | tar xf -
+	cd openmpi-4.0.0
+	./configure --enable-orterun-prefix-by-default
+	sudo make all install
 
 	echo 'export PATH=/usr/local/bin:$PATH' | sudo tee -a ~/.bashrc
 	echo 'export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH' | sudo tee -a ~/.bashrc
 	
-	sudo rm -Rf ~/Documentos/openmpi-3.1.2 ~/Documentos/openmpi-3.1.2.tar.gz
+	sudo rm -Rf ~/Documentos/openmpi-4.0.0 ~/Documentos/openmpi-4.0.0.tar.gz
                 
 	which mpicc
 	which mpirun
