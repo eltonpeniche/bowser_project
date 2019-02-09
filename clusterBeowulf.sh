@@ -1,9 +1,10 @@
 
 #!/bin/bash
 master="LABCOMP2-PC01"
+user="mpiuser"
 rede="192.168.100.0/24"
 cam=$(pwd)
-
+grupo="cluster"
 
 sudo apt install net-tools
 sudo apt update
@@ -13,6 +14,19 @@ sudo apt install arp-scan -y
 clear
 ms=3
 
+
+criarUsuario(){
+	echo "---------------Passo(1/5)-----------------"
+	echo "            CRIANDO USUÁRIO         "
+	sleep 2	
+	sudo adduser $user --uid 999
+	groupadd grupo
+	gpasswd -a $user $grupo
+	chown -R root:$grupo /etc/hosts
+	chmod -R g+rw /etc/hosts
+
+	sleep 2
+}
 configurarArquivoHosts(){
 	echo "---------------Passo(1/4)-----------------"
 	echo "CONFIGURANDO O ARQUIVO /etc/hosts         "
@@ -22,12 +36,11 @@ configurarArquivoHosts(){
 		echo ""
 	fi	
 
-	echo "$USER ALL=NOPASSWD: /usr/sbin/arp-scan/" | sudo tee -a /etc/sudoers
-    echo "$USER ALL=NOPASSWD: /bin/mv" | sudo tee -a /etc/sudoers
-    echo "$USER ALL=NOPASSWD: /bin/cp" | sudo tee -a /etc/sudoers
-    echo "$USER ALL=NOPASSWD: /bin/rm" | sudo tee -a /etc/sudoers
-    echo "$USER ALL=NOPASSWD: /usr/bin/python3" | sudo tee -a /etc/sudoers
-    echo "$USER ALL=NOPASSWD: /sbin/reboot, /sbin/shutdown" | sudo tee -a /etc/sudoers
+	echo "$user ALL=NOPASSWD: /usr/sbin/arp-scan/" | sudo tee -a /etc/sudoers
+    echo "$user ALL=NOPASSWD: /bin/mv, /bin/cp, /bin/rm" | sudo tee -a /etc/sudoers
+    echo "$user ALL=NOPASSWD: /usr/bin/scp" | sudo tee -a /etc/sudoers
+    echo "$user ALL=NOPASSWD: /usr/bin/python3" | sudo tee -a /etc/sudoers
+    echo "$user ALL=NOPASSWD: /sbin/reboot, /sbin/shutdown",  | sudo tee -a /etc/sudoers
 
 	#== ============Configuração do Slave==============================
 	if [ $ms -eq 1 ]; then
@@ -67,8 +80,8 @@ instalarNFS(){
 		sudo apt install nfs-common -y
 		# criando o ponto de montagem
 		#sudo mount $master:/home/$USER /home/$USER
-		echo "$master:/home/$USER/Bowser /home/$USER/Bowser nfs" | sudo tee -a /etc/fstab
-		echo "$master:/home/$USER/.ssh /home/$USER/.ssh nfs" | sudo tee -a /etc/fstab
+		echo "$master:/home/$user/Bowser /home/$user/Bowser nfs" | sudo tee -a /etc/fstab
+		echo "$master:/home/$user/.ssh /home/$user/.ssh nfs" | sudo tee -a /etc/fstab
 		# Agora vamos verificar se as pastas foram montadas corretamente
 		sudo mount -a
 		#echo ""
@@ -81,14 +94,14 @@ instalarNFS(){
 		
 		sudo apt-get install nfs-server -y
 		#Agora vamos editar o arquivo /etc/exports
-		mkdir /home/$USER/Bowser
-		mkdir /home/$USER/.ssh
-        echo "/home/$USER/Bowser *(rw,sync,no_subtree_check)" | sudo tee -a /etc/exports
-        echo "/home/$USER/.ssh *(rw,sync,no_subtree_check)" | sudo tee -a /etc/exports
+		sudo mkdir /home/$user/Bowser
+		sudo mkdir /home/$user/.ssh
+        echo "/home/$user/Bowser *(rw,sync,no_subtree_check)" | sudo tee -a /etc/exports
+        echo "/home/$user/.ssh *(rw,sync,no_subtree_check)" | sudo tee -a /etc/exports
 		sudo service nfs-kernel-server restart
 		#sudo exports -a
 		sudo ufw allow from $rede
-		source ~/.bashrc
+		
 		
 	fi
 	sleep 5
@@ -113,6 +126,7 @@ instalarSSH(){
 		sudo apt-get install openssh-client openssh-server -y
         #sudo apt install openssh-client -y
 		sudo apt install clusterssh -y
+		su $user
 		ssh-keygen
 		cd ~/.ssh
 		ssh-copy-id -i id_rsa.pub localhost
@@ -127,20 +141,18 @@ instacaoOpenMpi(){
 	echo "-----------Passo(4/4)--------------------"
 	echo "------Instalando o OPEN MPI--------------"
 	sleep 2
-	cp $cam/openmpi-4.0.0.tar.gz ~/Documentos
-	cd ~/Documentos
-	gunzip -c openmpi-4.0.0.tar.gz | tar xf -
+	sudo cp $cam/openmpi-4.0.0.tar.gz /home/$user/Documentos
+	cd /home/$user/Documentos
+	sudo gunzip -c openmpi-4.0.0.tar.gz | tar xf -
 	cd openmpi-4.0.0
 	./configure --enable-orterun-prefix-by-default
 	sudo make all install
 
-	echo 'export PATH=/usr/local/bin:$PATH' | sudo tee -a ~/.bashrc
-	echo 'export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH' | sudo tee -a ~/.bashrc
+	echo 'export PATH=/usr/local/bin:$PATH' | sudo tee -a /etc/bash.bashrc
+	echo 'export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH' | sudo tee -a /etc/bash.bashrc
 	
-	sudo rm -Rf ~/Documentos/openmpi-4.0.0 ~/Documentos/openmpi-4.0.0.tar.gz
+	sudo rm -Rf /home/$user/Documentos/openmpi-4.0.0 /home/$user/Documentos/openmpi-4.0.0.tar.gz
                 
-	which mpicc
-	which mpirun
 	sleep 3
 
 }
@@ -168,6 +180,7 @@ while true; do
 	elif [ $opcao -eq 4 ]; then
 		instacaoOpenMpi	
 	elif [ $opcao -eq 5 ]; then
+        criarUsuario
         configurarArquivoHosts
 		instalarNFS	
 		instalarSSH

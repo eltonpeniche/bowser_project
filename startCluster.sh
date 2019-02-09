@@ -12,7 +12,7 @@ echo -e '\n'
 for host in ${hosts[@]}
 do
     echo "Atualizando listas de IPS - $host"
-   	scp /etc/hosts $USER@$host:/etc/hosts
+	scp /etc/hosts $USER@$host:/etc/hosts
 done
 
 
