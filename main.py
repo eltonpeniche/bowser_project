@@ -97,11 +97,11 @@ arq = open('hosts', 'w')
 for i in lista3:
 	arq.writelines(i[1] + '\n')
 arq.close()
-os.system("sudo mv hosts ~/hosts")
+os.system("mv hosts ~/hosts")
 
 #lista de macs disponiveis 
 arq = open('macs', 'w')
 for i in y:
     arq.writelines(i[0] + '\n')
 arq.close()
-os.system("sudo mv macs ~/macs")
+os.system("mv macs ~/macs")
