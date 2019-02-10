@@ -17,7 +17,7 @@ ms=3
 
 criarUsuario(){
 	echo "---------------Passo(1/5)-----------------"
-	echo "            CRIANDO USUÁRIO         "
+	echo "------------CRIANDO USUÁRIO---------------"
 	sleep 2	
 	sudo adduser $user --uid 999
 	sudo groupadd $grupo
@@ -30,19 +30,15 @@ criarUsuario(){
 
 configurarArquivoHosts(){
 	echo "---------------Passo(1/4)-----------------"
-	echo "CONFIGURANDO O ARQUIVO /etc/hosts         "
+	echo "---CONFIGURANDO O ARQUIVO /etc/hosts------"
 	sleep 2
 	
 	echo "$user ALL=NOPASSWD: /usr/sbin/arp-scan/" | sudo tee -a /etc/sudoers
     echo "$user ALL=NOPASSWD: /bin/mv, /bin/cp, /bin/rm" | sudo tee -a /etc/sudoers
-    echo "$user ALL=NOPASSWD: /usr/bin/scp" | sudo tee -a /etc/sudoers
     echo "$user ALL=NOPASSWD: /usr/bin/python3" | sudo tee -a /etc/sudoers
     echo "$user ALL=NOPASSWD: /sbin/reboot, /sbin/shutdown" | sudo tee -a /etc/sudoers
 
-	#== ============Configuração do Slave==============================
-	
 	python3 main.py
-
 	sleep 2
 }
 
@@ -133,7 +129,7 @@ while true; do
 	elif [ $opcao -eq 0 ]; then
 		break
 	else
-		echo "ERRO! TENTE NOVAMENTE..!!"
+		echo "OPÇÃO INVÁLIDA! TENTE NOVAMENTE..!!"
 	fi
 
 done

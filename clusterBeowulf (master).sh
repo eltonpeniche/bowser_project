@@ -14,10 +14,9 @@ sudo apt install arp-scan -y
 clear
 ms=3
 
-
 criarUsuario(){
 	echo "---------------Passo(1/5)-----------------"
-	echo "            CRIANDO USUÁRIO         "
+	echo "------------CRIANDO USUÁRIO---------------"
 	sleep 2	
 	sudo adduser $user --uid 999
 	sudo groupadd $grupo
@@ -30,17 +29,22 @@ criarUsuario(){
 
 configurarArquivoHosts(){
 	echo "---------------Passo(1/4)-----------------"
-	echo "CONFIGURANDO O ARQUIVO /etc/hosts         "
+	echo "---CONFIGURANDO O ARQUIVO /etc/hosts------"
 	sleep 2
 
 	echo "$user ALL=NOPASSWD: /usr/sbin/arp-scan/" | sudo tee -a /etc/sudoers
     echo "$user ALL=NOPASSWD: /bin/mv, /bin/cp, /bin/rm" | sudo tee -a /etc/sudoers
-    echo "$user ALL=NOPASSWD: /usr/bin/scp" | sudo tee -a /etc/sudoers
     echo "$user ALL=NOPASSWD: /usr/bin/python3" | sudo tee -a /etc/sudoers
     echo "$user ALL=NOPASSWD: /sbin/reboot, /sbin/shutdown" | sudo tee -a /etc/sudoers
 
+    echo "senha para $user"
+	su -c "mkdir ~/.Cluster.config" $user
+	
+	python3 main
+	sudo cp main.py mac_host.txt /home/$user/.Cluster.config/
+	sudo chown -R root:$grupo /home/$user/.Cluster.config/*
+	sudo chmod -R g+rw /home/$user/.Cluster.config/*  
 
-	python3 main.py
 	chmod a+x startCluster.sh
 	sudo cp startCluster.sh /usr/bin
 
@@ -60,7 +64,7 @@ configurarArquivoHosts(){
 
 clear
 instalarNFS(){
-	echo "---------------Passo(2/4)-----------------"
+	echo "---------------Passo(3/5)-----------------"
 	echo "----------- Instalando o NFS--------------"
 
 
@@ -83,7 +87,7 @@ instalarNFS(){
 }
 
 instalarSSH(){
-	echo "-------------Passo(3/4)------------------"
+	echo "-------------Passo(4/5)------------------"
 	echo "-----------Instalando o SSH--------------"
 	sleep 2
 
@@ -91,9 +95,6 @@ instalarSSH(){
     #sudo apt install openssh-client -y
 	sudo apt install clusterssh -y
 	
-	#ssh-keygen
-	#cd ~/.ssh
-	#ssh-copy-id -i id_rsa.pub localhost
 	#echo "senha para $user: "
 	#su -c "ssh-keygen && cd ~/.ssh && ssh-copy-id -i id_rsa.pub localhost" $user
 	
@@ -103,7 +104,7 @@ instalarSSH(){
 
 instacaoOpenMpi(){
 	echo ""
-	echo "-----------Passo(4/4)--------------------"
+	echo "-----------Passo(5/5)--------------------"
 	echo "------Instalando o OPEN MPI--------------"
 	sleep 2
 	cp $cam/openmpi-4.0.0.tar.gz ~/Documentos
@@ -155,7 +156,7 @@ while true; do
 	elif [ $opcao -eq 0 ]; then
 		break
 	else
-		echo "ERRO! TENTE NOVAMENTE..!!"
+		echo "OPÇÃO INVÁLIDA! TENTE NOVAMENTE..!!"
 	fi
 
 done

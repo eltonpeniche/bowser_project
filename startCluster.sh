@@ -3,7 +3,7 @@
 
 # Variável com a lista de máquinas
 
-cd ~/Documentos/clusterBeowulfProject/
+cd ~/.Cluster.config/
 sudo python3 main.py
 
 hosts=(${hosts[@]} `cat ~/hosts`)
