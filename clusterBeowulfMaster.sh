@@ -48,8 +48,8 @@ configurarArquivoHosts(){
 	sudo chown -R root:$grupo /home/$user/.Cluster.config/*
 	sudo chmod -R g+rw /home/$user/.Cluster.config/*  
 
-	chmod a+x startCluster.sh
-	sudo cp startCluster.sh /usr/bin
+	chmod a+x configureIP.sh
+	sudo cp configureIP.sh /usr/bin
 
 	chmod a+x rebootCluster.sh
 	sudo cp rebootCluster.sh /usr/bin
