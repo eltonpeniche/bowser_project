@@ -32,11 +32,7 @@ configurarArquivoHosts(){
 	echo "---------------Passo(1/4)-----------------"
 	echo "CONFIGURANDO O ARQUIVO /etc/hosts         "
 	sleep 2
-	if [ $ms -eq 3 ]; then
-		read -p "A maquina é slave(1) ou master(0)? " ms
-		echo ""
-	fi	
-
+	
 	echo "$user ALL=NOPASSWD: /usr/sbin/arp-scan/" | sudo tee -a /etc/sudoers
     echo "$user ALL=NOPASSWD: /bin/mv, /bin/cp, /bin/rm" | sudo tee -a /etc/sudoers
     echo "$user ALL=NOPASSWD: /usr/bin/scp" | sudo tee -a /etc/sudoers
@@ -44,26 +40,8 @@ configurarArquivoHosts(){
     echo "$user ALL=NOPASSWD: /sbin/reboot, /sbin/shutdown" | sudo tee -a /etc/sudoers
 
 	#== ============Configuração do Slave==============================
-	if [ $ms -eq 1 ]; then
-		python3 main.py
-		
-	#== ============Configuração do Master=======================
-
-	elif [ $ms -eq 0 ]; then
-
-		python3 main.py
-		chmod a+x startCluster.sh
-		sudo cp startCluster.sh /usr/bin
-
-		chmod a+x rebootCluster.sh
-		sudo cp rebootCluster.sh /usr/bin
-
-		chmod a+x shutdownCluster.sh
-		sudo cp shutdownCluster.sh /usr/bin
-
-		chmod a+x wakeUpCluster.sh
-		sudo cp wakeUpCluster.sh /usr/bin
-	fi
+	
+	python3 main.py
 
 	sleep 2
 }
@@ -74,42 +52,20 @@ instalarNFS(){
 	echo "---------------Passo(2/4)-----------------"
 	echo "----------- Instalando o NFS--------------"
 	sleep 2
-	read -p "A maquina é slave(1) ou master(0)? " ms
-	echo ""
 
-	#+--------------Configuração do(s) slave(s)------------------------+
-	if [ $ms -eq 1 ]; then
-		
-		sudo apt install nfs-common -y
-		# criando o ponto de montagem
-		#sudo mount $master:/home/$USER /home/$USER
-		echo "$master:/home/$user/Bowser /home/$user/Bowser nfs" | sudo tee -a /etc/fstab
-		echo "$master:/home/$user/.ssh /home/$user/.ssh nfs" | sudo tee -a /etc/fstab
-		# Agora vamos verificar se as pastas foram montadas corretamente
-		sudo mount -a
-		#echo ""
-		#df –h
+	sudo apt install nfs-common -y
+	# criando o ponto de montagem
+	#sudo mount $master:/home/$USER /home/$USER
+	echo "$master:/home/$user/Bowser /home/$user/Bowser nfs" | sudo tee -a /etc/fstab
+	echo "$master:/home/$user/.ssh /home/$user/.ssh nfs" | sudo tee -a /etc/fstab
+	# Agora vamos verificar se as pastas foram montadas corretamente
+	sudo mount -a
+	#echo ""
+	#df –h
 		
 
-	#== ============Configuração do Master==============================
 
-	elif [ $ms -eq 0 ]; then
-		
-		sudo apt-get install nfs-server -y
-		#Agora vamos editar o arquivo /etc/exports
-		echo "senha para $user: "
-		su -c "mkdir /home/$user/Bowser" $user
-		echo "senha para $user: "
-		su -c "mkdir /home/$user/.ssh" $user
-		
-		echo "/home/$user/Bowser *(rw,sync,no_subtree_check)" | sudo tee -a /etc/exports
-        echo "/home/$user/.ssh *(rw,sync,no_subtree_check)" | sudo tee -a /etc/exports
-		sudo service nfs-kernel-server restart
-		#sudo exports -a
-		sudo ufw allow from $rede
-		
-		
-	fi
+
 	sleep 5
 }
 
@@ -117,29 +73,9 @@ instalarSSH(){
 	echo "-------------Passo(3/4)------------------"
 	echo "-----------Instalando o SSH--------------"
 	sleep 2
-	if [ $ms -eq 3 ]; then
-		read -p "A maquina é slave(1) ou master(0)? " ms
-		echo ""
-	fi	
 
-	#+--------------Configuração do(s) slave(s)------------------------+
-	if [ $ms -eq 1 ]; then
-		sudo apt install openssh-server -y
+	sudo apt install openssh-server -y
 		
-	#== ============Configuração do Master==============================
-
-	elif [ $ms -eq 0 ]; then
-		sudo apt-get install openssh-client openssh-server -y
-        #sudo apt install openssh-client -y
-		sudo apt install clusterssh -y
-		
-		#ssh-keygen
-		#cd ~/.ssh
-		#ssh-copy-id -i id_rsa.pub localhost
-		echo "senha para $user: "
-		#su -c "ssh-keygen && cd ~/.ssh && ssh-copy-id -i id_rsa.pub localhost" $user
-	fi
-
 	sleep 5
 }
 

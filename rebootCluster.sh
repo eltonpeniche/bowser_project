@@ -2,9 +2,9 @@
 
 
 # Variável com a lista de máquinas
-hosts=(LABCOMP2-PC02 LABCOMP2-PC03)
+hosts=(${hosts[@]} `cat ~/hosts`)
 
-for host in ${hosts[@]}
+for host in ${hosts[@]:1}
 do
     echo "Reiniciando o $host"
     ssh -t $USER@$host 'sudo reboot'

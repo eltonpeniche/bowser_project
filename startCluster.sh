@@ -2,14 +2,13 @@
 
 
 # Variável com a lista de máquinas
-hosts=(LABCOMP2-PC02 LABCOMP2-PC03)
 
 cd ~/Documentos/clusterBeowulfProject/
 sudo python3 main.py
 
+hosts=(${hosts[@]} `cat ~/hosts`)
 echo -e '\n'
-
-for host in ${hosts[@]}
+for host in ${hosts[@]:1}
 do
     echo "Atualizando listas de IPS - $host"
 	scp /etc/hosts $USER@$host:/etc/hosts
