@@ -82,26 +82,25 @@ if len(aux) > 1:
             
 
 lista3 = quicksort(lista3)
-#grava no arquivo host a lista3 (contém IP + NOME DO COMPUTADOR)
+#grava no arquivo host a lista3 (contém IP + NOME DO COMPUTADOR) + 
+#lista de hosts disponiveis +
+
 arq = open('hosts', 'w')
+arq2 = open('hosts2', 'w')
 arq.writelines('127.0.0.1	localhost' + '\n\n')
 for i in lista3:
-	arq.writelines(i[0]+ ' ' +i[1] + '\n')
+    arq.writelines(i[0]+ ' ' +i[1] + '\n')
+    arq2.writelines(i[1] + '\n')
+
 arq.close()
+arq2.close()
 
 os.system("sudo mv hosts /etc/hosts")
-
-
-#lista de hosts disponiveis 
-arq = open('hosts', 'w')
-for i in lista3:
-	arq.writelines(i[1] + '\n')
-arq.close()
-os.system("mv hosts ~/hosts")
+os.system("mv hosts2 ~/hosts")
 
 #lista de macs disponiveis 
 arq = open('macs', 'w')
 for i in y:
     arq.writelines(i[0] + '\n')
 arq.close()
-os.system("mv macs ~/macs")
+os.system("mv macs ~/.Cluster.config/macs")
