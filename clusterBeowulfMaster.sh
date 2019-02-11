@@ -138,7 +138,7 @@ while true; do
 	echo " INSTALAR E CONFIGURAR  O OPEN MPI----------(5)"	
 	echo " TODAS AS OPÇÕES----------------------------(6)"	
 	echo " SAIR---------------------------------------(0)"
-	read -p "escolha uma opção de 0 a 5:  " opcao
+	read -p "escolha uma opção de 0 a 6:  " opcao
 	clear
 
 	if [ $opcao -eq 1 ]; then
