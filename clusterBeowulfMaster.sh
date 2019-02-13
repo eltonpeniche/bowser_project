@@ -49,17 +49,18 @@ configurarArquivoHosts(){
 	sudo chmod -R g+rw /home/$user/.Cluster.config/*  
 
 	chmod a+x configureIP.sh
-	sudo cp configureIP.sh /usr/bin
+	sudo cp configureIP.sh /home/$user/.Cluster.config/
 
 	chmod a+x rebootCluster.sh
-	sudo cp rebootCluster.sh /usr/bin
+	sudo cp rebootCluster.sh /home/$user/.Cluster.config/
 
 	chmod a+x shutdownCluster.sh
-	sudo cp shutdownCluster.sh /usr/bin
+	sudo cp shutdownCluster.sh /home/$user/.Cluster.config/
 
 	chmod a+x wakeUpCluster.sh
-	sudo cp wakeUpCluster.sh /usr/bin
+	sudo cp wakeUpCluster.sh /home/$user/.Cluster.config/
 	
+	echo "export PATH=~/.Cluster.config/:$PATH" | sudo tee -a /home/$user/.bashrc
 
 	sleep 2
 }
