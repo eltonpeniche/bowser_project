@@ -98,9 +98,3 @@ arq2.close()
 os.system("sudo mv hosts /etc/hosts")
 os.system("mv hosts2 ~/hosts")
 
-#lista de macs disponiveis 
-arq = open('macs', 'w')
-for i in y:
-    arq.writelines(i[0] + '\n')
-arq.close()
-os.system("mv macs ~/.Cluster.config/macs")
