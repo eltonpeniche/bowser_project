@@ -53,19 +53,16 @@ instalarNFS(){
 
 	sudo apt install nfs-common -y
     
-    echo "senha para $user: "
-	su -c "mkdir /home/$user/PortaoVerde" $user
-	echo "senha para $user: "
-	su -c "mkdir /home/$user/.ssh" $user
+	su -c "mkdir /home/$user/$pasta /home/$user/.ssh && chmod 754 /home/$user/$pasta /home/$user/.ssh " $user
 	
-	sudo mount $master:/home/$user/PortaoVerde /home/$user/PortaoVerde 
+	sudo mount $master:/home/$user/$pasta /home/$user/$pasta 
 	sudo mount $master:/home/$user/.ssh /home/$user/.ssh
 	
 	# criando o ponto de montagem
 	echo "$master:/home/$user/Bowser /home/$user/Bowser nfs" | sudo tee -a /etc/fstab
 	echo "$master:/home/$user/.ssh /home/$user/.ssh nfs" | sudo tee -a /etc/fstab
 	
-	#sudo mount -a
+	sudo mount -a
 	
 	sleep 5
 }

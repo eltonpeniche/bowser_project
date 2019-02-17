@@ -5,6 +5,7 @@ user="mpiuser"
 rede="192.168.100.0/24"
 cam=$(pwd)
 grupo="cluster"
+pasta="Bowser"
 
 sudo apt install net-tools
 sudo apt update
@@ -37,30 +38,17 @@ configurarArquivoHosts(){
     echo "$user ALL=NOPASSWD: /sbin/reboot, /sbin/shutdown" | sudo tee -a /etc/sudoers
 
     echo "senha para $user"
-	su -c "mkdir ~/.Cluster.config" $user
+	su -c "mkdir ~/.Cluster.config && chmod 754 ~/.Cluster.config" $user
 	
 	python3 main.py
 	
 	sudo chown -R root:$grupo /etc/hosts
 	sudo chmod -R g+rw /etc/hosts
 	
-	sudo cp main.py mac_host.txt /home/$user/.Cluster.config/
+	sudo cp main.py mac_host.txt configureIP.sh rebootCluster.sh shutdownCluster.sh wakeUpCluster.sh /home/$user/.Cluster.config/
 	sudo chown -R root:$grupo /home/$user/.Cluster.config/*
-	sudo chmod -R g+rw /home/$user/.Cluster.config/*  
-
-	chmod a+x configureIP.sh
-	sudo cp configureIP.sh /home/$user/.Cluster.config/
-
-	chmod a+x rebootCluster.sh
-	sudo cp rebootCluster.sh /home/$user/.Cluster.config/
-
-	chmod a+x shutdownCluster.sh
-	sudo cp shutdownCluster.sh /home/$user/.Cluster.config/
-
-	chmod a+x wakeUpCluster.sh
-	sudo cp wakeUpCluster.sh /home/$user/.Cluster.config/
-	
-	echo "export PATH=~/.Cluster.config/:$PATH" | sudo tee -a /home/$user/.bashrc
+	 
+    echo "export PATH=~/.Cluster.config/:$PATH" | sudo tee -a /home/$user/.bashrc
 
 	sleep 2
 }
@@ -75,11 +63,9 @@ instalarNFS(){
 	sudo apt-get install nfs-server -y
 	#Agora vamos editar o arquivo /etc/exports
 	echo "senha para $user: "
-	su -c "mkdir /home/$user/Bowser" $user
-	echo "senha para $user: "
-	su -c "mkdir /home/$user/.ssh" $user
+	su -c "mkdir /home/$user/$pasta /home/$user/.ssh && chmod 754 /home/$user/$pasta /home/$user/.ssh " $user
 	
-	echo "/home/$user/Bowser *(rw,sync,no_subtree_check)" | sudo tee -a /etc/exports
+    echo "/home/$user/$pasta *(rw,sync,no_subtree_check)" | sudo tee -a /etc/exports
     echo "/home/$user/.ssh *(rw,sync,no_subtree_check)" | sudo tee -a /etc/exports
 	sudo service nfs-kernel-server restart
 	sudo exportfs -a
