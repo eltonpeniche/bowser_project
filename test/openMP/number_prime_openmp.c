@@ -3,8 +3,6 @@
 #include <omp.h>
 #include <math.h>
 
-#define MASTER 0
- 
 int is_prime(long long int num){
 	long long int max_divisor, d;
 	if(num<1) 
@@ -64,7 +62,7 @@ int main(int argc, char *argv[]){
         
     }
     
-    printf("\n\nNumber Process %d\n", nthreads);
+    printf("\nNumber Process %d\n", nthreads);
     printf("%i primes were found between %i and %i\n", sum, 0, quant);
 
     
