@@ -40,4 +40,4 @@ int main(int argc, char *argv[]){
     return 0;
 }
 
-// gcc monte_carlo_openmp.c -fopenmp -lm && ./a.out
+// gcc monte_carlo_pi_openmp.c -fopenmp -lm && ./a.out
